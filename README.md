@@ -28,6 +28,7 @@ This script [solves the single quotes bug](https://kb.paessler.com/en/topic/7526
 
 ## How to use it
 - First, clone/copy *ZendestWebhook.ps1* to: `C:\Program Files (x86)\PRTG Network Monitor\Notifications\EXE` (your path may vary if using a different architecture with your PRTG server)
+- Open *ZendeskWebhook.ps1* and add your config (Zendesk credentials, log options, etc)
 - Login to your PRTG dashboard
 - Setup > Account Settings > Notification Templates
 - Add/click on the template you want to use with this script
@@ -40,6 +41,9 @@ This script [solves the single quotes bug](https://kb.paessler.com/en/topic/7526
 - In the search field (upper right corner), search for the *sensor Group* you'd like to use this script with
 - Under the group list, click it > Notification Triggers > Add/edit the trigger you wish to use with this script and select the notification template you assigned the script to earlier
 - Save and trigger a sensor that's using the template to test!
+
+## Customizing
+If you'd like to add additional verbiage to your tickets, you can call [additional parameters](https://kb.paessler.com/en/topic/373-what-placeholders-can-i-use-with-prtg) in similar fashion to the existing parameters.
 
 ### License
 Tietze's release is unlicensed/public domain; my changes are licensed under GPL2

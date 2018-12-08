@@ -28,7 +28,7 @@ This script [solves the single quotes bug](https://kb.paessler.com/en/topic/7526
 ![PRTG Parameters](./img/execute-program.png)
 
 ## How to use it
-- First, clone/copy *ZendestWebhook.ps1* to: `C:\Program Files (x86)\PRTG Network Monitor\Notifications\EXE` (your path may vary if using a different architecture with your PRTG server)
+- First, clone/copy *ZendeskWebhook.ps1* to: `C:\Program Files (x86)\PRTG Network Monitor\Notifications\EXE` (your path may vary if using a different architecture with your PRTG server)
 - Open *ZendeskWebhook.ps1* and add your config (Zendesk credentials, log options, etc; use your *API token* as the password)
 - Login to your PRTG dashboard
 - Setup > Account Settings > Notification Templates

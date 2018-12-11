@@ -49,7 +49,7 @@ $stripBefore = $fullMessage.IndexOf("-Message")
 # now that the message has been extracted, it can be passed as a normal variable
 $Message     = $fullMessage.Substring($stripBefore+1)
 
-# remove the numeric string prefix, referenced on line 34
+# remove the numeric string prefix, referenced on line 46
 $Message     = $Message.Trim() -replace "^[0-9]*:",""
 
 # remove 'error by lookup value' in the body of the ticket

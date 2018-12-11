@@ -1,14 +1,17 @@
 # PRTG Zendesk Tickets Webhook
 
-Automatically open tickets for triggered sensors using Powershell.  Forked from [Integrating Zendesk and PRTG](https://tietze.io/b/2015/09/08/integrating-zendesk-and-prtg/)
+Automatically open Zendesk tickets for triggered sensors using Powershell.  Forked from [Integrating Zendesk and PRTG](https://tietze.io/b/2015/09/08/integrating-zendesk-and-prtg/)
 
 ![Zendesk Tickets](./img/tickets.png)
+
+
+This script [solves the single quotes bug](https://kb.paessler.com/en/topic/75261-single-quote-in-sensor-message-breaks-notification-script) PRTG developers won't fix for Powershell EXE Notifications.
 
 Before:
 > Error by lookup value
 
 After:
-> Error by lookup value Critical (2) in channel Imaging Unit (Magenta)
+> Critical (2) in channel Imaging Unit (Magenta)
 >
 > .. if additional triggers from the same sensor, a newline to easily list the problems
 
@@ -18,12 +21,11 @@ Main Features:
 
 This version has additional features:
 - Tokenized authentication, to keep your password secure
+- Secure API connections over TLS 1.2
 - Fixes the single quote bug when using Powershell
-- Local logging option for debugging when testing sensors
+- Local logging option for debugging when testing sensor messages
 - A bit more newb friendly
 - Formatting cleanup
-
-This script [solves the single quotes bug](https://kb.paessler.com/en/topic/75261-single-quote-in-sensor-message-breaks-notification-script) PRTG developers won't fix for Powershell EXE Notifications.
 
 ![PRTG Parameters](./img/execute-program.png)
 
@@ -46,7 +48,10 @@ This script [solves the single quotes bug](https://kb.paessler.com/en/topic/7526
 ## Customizing
 If you'd like to add additional verbiage to your tickets, you can call [additional parameters](https://kb.paessler.com/en/topic/373-what-placeholders-can-i-use-with-prtg) in similar fashion to the existing parameters.
 
-If you prefer to use password authentication with Zendesk instead of token auth, simply remove '/token' from the username.
+(Don't forget to add them to *params()* to initialize inside `ZendeskWebhook.ps1`)
+
+### Password Auth over Token Authorization
+If you prefer to use password authentication with Zendesk instead of token auth (the default), simply remove '/token' from the username.
 
 ### License
 Tietze's release is unlicensed/public domain; my changes are licensed under GPL2

@@ -38,7 +38,7 @@ $logPath   = "C:\Users\Administrator\Desktop\log.txt"
 # additional processing is required to handle messages that have single quotes in them, kinda hacky, but this isn't really going to be a high-traffic script that runs frequently (right?)
 foreach ($arg in $args){
 
-   $paramResult += "" + $arg + " "
+  $paramResult += "" + $arg + " "
 
 }
 
@@ -51,6 +51,9 @@ $Message     = $fullMessage.Substring($stripBefore+1)
 
 # remove the numeric string prefix, referenced on line 34
 $Message     = $Message.Trim() -replace "^[0-9]*:",""
+
+# remove 'error by lookup value' in the body of the ticket
+$Message     = $Message -replace "Error by lookup value ",""
 
 # inject a newline when there's a dash in the comments, to keep it clean
 $Message     = $Message -replace " — ","`n"
@@ -73,7 +76,6 @@ $AuthHeader = @{
 
   "Content-Type"  = "application/json";
   "Authorization" = 'Basic ' + [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("$($User):$($Pass)"))
-
 }
 
 # call the zendesk api

@@ -23,14 +23,14 @@ Param(
 
 ## CONFIG
 # zendesk credentials
-$User      = "youremail@example.com/token" # user must be verified to use the zendesk api
+$User      = "youremail@example.com/token"  # user must be verified to use the zendesk api
 $Pass      = "abcdefghijklmnopqrstuvwxyz0123456789"
 # Author ID (numeric) for updates to existing tickets, ie: https://[example].zendesk.com/agent/#/users/370381808374
 $AuthorId  = "1234567989"
 $prtgName  = "PRTG"
 $prtgEmail = "prtg@example.com"
 $BaseUri   = "https://[yourzendeskurl].zendesk.com"
-$debug     = 1 # set to 1 if you want to save a log file to the location referenced in $logPath
+$debug     = 0  # set to 1 if you want to save a log file to the location referenced in $logPath
 $logPath   = "C:\Users\Administrator\Desktop\log.txt"
 ## END CONFIG
 

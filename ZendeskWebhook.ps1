@@ -101,7 +101,7 @@ $SearchResults = Call-ZenDesk '/api/v2/search.json' Get $Transaction
 Write-Host "Search results count: $($SearchResults.count)"
 
 # Update existing ticket or create new
-if ($SearchResults.count -gt 0) {
+if ($SearchResults.count -gt 0 -AND $CommentBody -notlike '*OK*') {
 
   # there is at least one open ticket for this device tagged with PRTG
   $Ticket = $SearchResults.results.Item(0)

@@ -39,7 +39,7 @@ This version has additional features:
 - In the **Program File** field, select `Zendeskwebhook.ps1`
 - In the **Parameters** field, add the following:
 ```powershell
--Device '%device' -Status '%status' -Down '%down' -Group '%group' -commentssensor '%commentssensor' -CommentsProbe '%commentsprobe' -Message ''%message''
+-Device '%device' -Status '%status' -Down '%down' -Group '%group' -commentssensor '%commentssensor' -CommentsProbe '%commentsprobe' -Message '%message'
 ```
 - In the search field (upper right corner), search for the *sensor Group* you'd like to use this script with
 - Under the group list, click it > Notification Triggers > Add/edit the trigger you wish to use with this script and select the notification template you assigned the script to earlier
@@ -52,6 +52,10 @@ If you'd like to add additional verbiage to your tickets, you can call [addition
 
 ### Password Auth over Token Authorization
 If you prefer to use password authentication with Zendesk instead of token auth (the default), simply remove '/token' from the username.
+
+### Troubleshooting
+- Auto-closure of tickets after a device returns to Up/OK is not a feature, at this time.  If this is something you need, you'll have to extend the codebase.
+- Duplicate tickets: If you're seeing numerous tickets per device, set a dependency in each sensor (under Settings for the Device), so the child sensors get paused if the parent (Ping, for example) is down.
 
 ### License
 Tietze's release is unlicensed/public domain; my changes are licensed under GPL2

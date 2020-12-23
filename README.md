@@ -5,8 +5,6 @@ Automatically open Zendesk tickets for triggered sensors using Powershell.  Fork
 ![Zendesk Tickets](./img/tickets.png)
 
 
-This script [solves the single quotes bug](https://kb.paessler.com/en/topic/75261-single-quote-in-sensor-message-breaks-notification-script) PRTG developers won't fix for Powershell EXE Notifications.
-
 Before:
 > Error by lookup value
 
@@ -46,7 +44,7 @@ This version has additional features:
 - Save and trigger a sensor that's using the template to test!
 
 ## Customizing
-If you'd like to add additional verbiage to your tickets, you can call [additional parameters](https://kb.paessler.com/en/topic/373-what-placeholders-can-i-use-with-prtg) in similar fashion to the existing parameters.
+If you'd like to add additional verbiage to your tickets, you can call [additional parameters](https://www.paessler.com/manuals/prtg/list_of_placeholders_for_notifications) in similar fashion to the existing parameters.
 
 (Don't forget to add them to *params()* to initialize inside `ZendeskWebhook.ps1`)
 

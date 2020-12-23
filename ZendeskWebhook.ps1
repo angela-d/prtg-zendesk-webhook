@@ -35,29 +35,13 @@ $logPath   = "C:\Users\Administrator\Desktop\log.txt"
 ## END CONFIG
 
 
-# additional processing is required to handle messages that have single quotes in them, kinda hacky, but this isn't really going to be a high-traffic script that runs frequently (right?)
-foreach ($arg in $args){
-
-  $paramResult += "" + $arg + " "
-
-}
-
-# without the numeric string length, the string duplicates. bugfix for another time
-$fullMessage = [string]$args.Length + ":" + $paramResult
-$stripBefore = $fullMessage.IndexOf("-Message")
-
-# now that the message has been extracted, it can be passed as a normal variable
-$Message     = $fullMessage.Substring($stripBefore+1)
-
-# remove the numeric string prefix, referenced on line 46
+# remove the numeric string prefix, referenced on line 34
 $Message     = $Message.Trim() -replace "^[0-9]*:",""
-
-# remove 'error by lookup value' in the body of the ticket
 $Message     = $Message -replace "Error by lookup value ",""
+
 
 # inject a newline when there's a dash in the comments, to keep it clean
 $Message     = $Message -replace " — ","`n"
-$Message     = $Message -replace "'","" # strip out the trailing '
 
 
 # if you want to log something other than the $Message var, simply replace the references in the conditional code block

@@ -21,6 +21,7 @@ This version has additional features:
 - Tokenized authentication, to keep your password secure
 - Secure API connections over TLS 1.2
 - Fixes the single quote bug when using Powershell
+- Option to update existing open/new tickets
 - Local logging option for debugging when testing sensor messages
 - A bit more newb friendly
 - Formatting cleanup
@@ -47,6 +48,34 @@ This version has additional features:
 If you'd like to add additional verbiage to your tickets, you can call [additional parameters](https://www.paessler.com/manuals/prtg/list_of_placeholders_for_notifications) in similar fashion to the existing parameters.
 
 (Don't forget to add them to *params()* to initialize inside `ZendeskWebhook.ps1`)
+
+***
+**(optional) Update Existing Tickets**
+
+- 1) Set the `$updateExisting` variable to `1`
+- 2) You can customize "update" messages by modifying the following:
+  ```powershell
+    # Update existing ticket or create new
+    if ($existingNewTickets -gt 0 -and $updateExisting -eq 1) {
+
+      # there is at least one open ticket for this device tagged with PRTG
+      $Ticket = $SearchResults.results.Item(0)
+      Write-Host "Found a ticket! Updating ticket #$($Ticket.id)"
+
+      $Transaction = @{
+        ticket = @{
+          comment = @{
+            public    = $false;
+            body      = $CommentBody;
+            author_id = $AuthorId;
+          }
+        }
+      }
+      ...
+  ```
+    - `public = $false;` = Whether or not you want the reply to be a public reply, or just for agents
+    - `body = $CommentBody;` = If you want a custom reply, set your own message (or variable) here, otherwise, it'll re-post the initial message
+    - `author_id = $AuthorId;` = If you want to change the follow-up reply author, modify that here, otherwise, the initial poster will be the reply author
 
 ### Password Auth over Token Authorization
 If you prefer to use password authentication with Zendesk instead of token auth (the default), simply remove '/token' from the username.

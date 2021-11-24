@@ -2,6 +2,10 @@
 #
 # solves bug: https://kb.paessler.com/en/topic/75261-single-quote-in-sensor-message-breaks-notification-script
 #
+# angela 11/24/21:
+# - bugfix for multiple existing tickets; search by subject
+# - added option to update existing ticket, or leave it be
+#
 # angela 12/7/18: added:
 # - detailed messages & tags that don't break with single quotes
 # - local log generator for easy troubleshooting
@@ -30,9 +34,15 @@ $AuthorId  = "1234567989"
 $prtgName  = "PRTG"
 $prtgEmail = "prtg@example.com"
 $BaseUri   = "https://[yourzendeskurl].zendesk.com"
+$updateExisting = 0
 $debug     = 0  # set to 1 if you want to save a log file to the location referenced in $logPath
 $logPath   = "C:\Users\Administrator\Desktop\log.txt"
 ## END CONFIG
+
+### NOTE TO SELF! ###
+# some of these messages, after find/replace have EXTRA spaces that get stripped from zendesk!
+# copying the message from zendesk into a replace string will not work; you need to activate debug
+# mode to see the true construct of the message that needs to be filtered
 
 
 # remove the numeric string prefix, referenced on line 34
@@ -47,13 +57,13 @@ $Message     = $Message -replace " — ","`n"
 # if you want to log something other than the $Message var, simply replace the references in the conditional code block
 if ($debug -eq 1 -AND (Test-Path $logPath)) {
 
-  Write-Output $Message | Out-File $logPath -Append
+  Write-Output $Message $CommentsSensor | Out-File $logPath -Append
 
 } elseif ($debug -eq 1 -AND !(Test-Path $logPath)) {
 
   New-Item $logPath -ItemType file
   # redundant, but add-content was goobering up with unnecessary spaces between letters
-  Write-Output $Message | Out-File $logPath -Append
+  Write-Output $Message $CommentsSensor | Out-File $logPath -Append
 }
 
 $AuthHeader = @{
@@ -70,7 +80,12 @@ function Call-ZenDesk($Api, $Method, $Body) {
   Invoke-RestMethod -Method $Method -Uri "$($BaseUri)$($Api)" -Headers $AuthHeader -Body $Body
 }
 
-$CommentBody   = "$($Device) $($Group) $($Status) $($Down)`n`n$($CommentSsensor) $($Message) $($CommentsProbe)"
+# queue monitoring scripts don't use plural subjects, so adjust if the group match is printers, to avoid duplicate tickets
+if ($($Group) -eq 'Printers') {
+    $Group = 'Printer'
+}
+
+$CommentBody   = "$($CommentSsensor) $($Message) $($CommentsProbe)"
 $TicketSubject = "$($Device) $($Group) Issue"
 # formatting used to search tags & add new; for updating existing tickets
 $deviceTag     = $Device.Trim() -replace ' ','-'
@@ -78,14 +93,21 @@ $deviceTag     = $Device.Trim() -replace ' ','-'
 # find existing tickets, if any
 $Transaction = @{
 
-  query = "subject:$($deviceTag) status<solved tags:monitoring-alert";
+  query = "subject:$($TicketSubject) status:new status:open";
 }
 
 $SearchResults = Call-ZenDesk '/api/v2/search.json' Get $Transaction
-Write-Host "Search results count: $($SearchResults.count)"
+$existingNewTickets = $($SearchResults.count)
+Write-Host "Search results count: $existingNewTickets"
+
+if ($debug -eq 1) {
+
+  Write-Output "$existingNewTickets new/open existing tickets for: $($TicketSubject)" | Out-File $logPath -Append
+
+}
 
 # Update existing ticket or create new
-if ($SearchResults.count -gt 0 -AND $CommentBody -notlike '*OK*') {
+if ($existingNewTickets -gt 0 -and $updateExisting -eq 1) {
 
   # there is at least one open ticket for this device tagged with PRTG
   $Ticket = $SearchResults.results.Item(0)
@@ -104,7 +126,21 @@ if ($SearchResults.count -gt 0 -AND $CommentBody -notlike '*OK*') {
   $Body = ConvertTo-Json($Transaction)
   Call-ZenDesk "/api/v2/tickets/$($Ticket.id).json" Put $Body
 
-} else {
+  if ($debug -eq 1) {
+
+    Write-Output "Updated existing ticket: $($Ticket.id)" | Out-File $logPath -Append
+
+  }
+
+} elseif ($existingNewTickets -gt 0 -and $updateExisting -eq 0 -and $debug -eq 1) {
+
+$existingMessage = "Existing ticket found; not updating or creating a new one."
+
+  if ($debug -eq 1) {
+    Write-Output $existingMessage | Out-File $logPath -Append
+  }
+
+} elseif ($existingNewTickets -eq 0) {
 
   # no ticket found, create one; to add additional tags, separate by a comma
   $Tags        = "monitoring-alert,$($deviceTag)"
@@ -116,15 +152,15 @@ if ($SearchResults.count -gt 0 -AND $CommentBody -notlike '*OK*') {
       name  = "$prtgName";
       email = "$prtgEmail"
     };
-    subject  = $TicketSubject;
+    subject  = "$TicketSubject";
     type     = "Incident";
     priority = "Normal";
 
     comment = @{
       public = $false;
-      body   = $CommentBody;
+      body   = "$CommentBody";
     };
-    tags = $Tags.Split(',')
+    tags = "$Tags"
     }
   }
 

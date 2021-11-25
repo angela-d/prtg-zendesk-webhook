@@ -82,7 +82,6 @@ If you prefer to use password authentication with Zendesk instead of token auth 
 
 ### Troubleshooting
 - Auto-closure of tickets after a device returns to Up/OK is not a feature, at this time.  If this is something you need, you'll have to extend the codebase.
-- Duplicate tickets: If you're seeing numerous tickets per device, set a dependency in each sensor (under Settings for the Device), so the child sensors get paused if the parent (Ping, for example) is down.
 - If you aren't getting tickets opened for messages that have single quotes: `Error by lookup value 'Critical (1)' in channel 'Toner (Yellow)'` - modify your contact template to have double-quotes over the **-Message** parameter, like so:
     ```text
     -Message "%lastmessage"
